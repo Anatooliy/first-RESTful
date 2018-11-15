@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RESTful.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,11 +9,12 @@ namespace RESTful.Controllers
 {
     public class HomeController : Controller
     {
+        private BooksContext db = new BooksContext();
         public ActionResult Index()
         {
             ViewBag.Title = "Home Page";
-
-            return View();
+            var genres = db.Genres.ToList(); 
+            return View(genres);
         }
     }
 }
