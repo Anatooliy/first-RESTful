@@ -19,5 +19,10 @@ namespace RESTful.Controllers
         {
             return View(db.Books.ToList());
         }
+
+        public ActionResult Genre()
+        {
+            return View(db.Genres.ToList());
+        }
     }
 }

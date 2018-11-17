@@ -5,7 +5,100 @@
 <h2>Books store</h2>
 
 <div class="row">
+    <p style="color:red">I will finish it today (17.11.2018)</p>
+    <div id="genres" class="col-md-12">
+        @using (Html.BeginForm())
+        {
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Выберите жанр</label>
+                <select class="form-control" id="genre-list">
+
+                </select>
+            </div>            
+         }
+    </div>
     <div id="books-list" class="col-md-12">
-        <p style="color:red">I will finish it today (17.11.2018)</p> 
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Жанр</th>
+                    <th>Дата создания</th>
+                    <th>Издательство</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            GetAllGenres();
+            GetAllBooks();
+        });
+
+        // Получение всех книг по ajax-запросу
+        function GetAllBooks() {          
+            
+            $.ajax({
+                url: '/api/books',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    WriteBooksResponse(data);
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+
+        // Получение всех книг по ajax-запросу
+        function GetAllGenres() {
+
+            $.ajax({
+                url: '/api/genres',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    WriteGenreResponse(data);
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+
+        // вывод полученных книг на экран
+        function WriteBooksResponse(books) {      
+            var strResult;
+            $.each(books, function (index, book) {
+                strResult += "<tr>";
+                strResult += "<td> " + book.BookName + "</td>"
+                    + "<td>" + book.AuthorName + "</td>"
+                    + "<td>" + book.Genre.GenreName + "</td>"
+                    + "<td>" + book.CreateDate + "</td>"
+                    + "<td>" + book.Publisher.PublisherName + "</td>"
+                    + "<td><a id='editItem' data-item='" + book.BookId + "' onclick='EditItem(this);' >Редактировать</a></td>"
+                    + "<td><a id='delItem' data-item='" + book.BookId + "' onclick='DeleteItem(this);' >Удалить</a></td>"
+                + "</tr>";
+            });            
+            $("#books-list").find("tbody").html(strResult);
+        }
+
+        // вывод полученных жанров на экран
+        function WriteGenreResponse(genres) {
+            var strResult = "<option>Выберите жанр</option>";;
+            $.each(genres, function (index, genre) {                
+                strResult += "<option value='" + genre.GenreId + "'>" + genre.GenreName + "</option>";                   
+            });
+            $("#genre-list").html(strResult);
+        }
+    </script>
+    
+}

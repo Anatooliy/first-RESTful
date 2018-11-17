@@ -11,7 +11,8 @@ namespace RESTful.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
         public int PublisherId { get; set; }
-        public string PublisherName { get; set; }        
+        public string PublisherName { get; set; }
+        [System.Runtime.Serialization.IgnoreDataMember]
         public virtual ICollection<Book> Books { get; set; }
 
         public Publisher()
