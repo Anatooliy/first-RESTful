@@ -11,21 +11,16 @@
         {
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Выберите жанр</label>
-                <select class="form-control" id="genre-list">
-
-                </select>
-            </div>            
-         }
+                <select class="form-control" id="genre-list"></select>
+            </div>
+        }
     </div>
     <div id="books-list" class="col-md-12">
         <table class="table table-hover table-striped">
             <thead>
                 <tr>
                     <th>Название</th>
-                    <th>Автор</th>
-                    <th>Жанр</th>
-                    <th>Дата создания</th>
-                    <th>Издательство</th>
+                    <th></th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -35,16 +30,38 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
     <script>
         $(document).ready(function () {
             GetAllGenres();
             GetAllBooks();
+
+            $(document).on("click", ".js-button-detail", function () {
+                var id = $(this).data("item");
+                GetDetailBookInfo(id);
+            });
         });
 
         // Получение всех книг по ajax-запросу
-        function GetAllBooks() {          
-            
+        function GetAllBooks() {
             $.ajax({
                 url: '/api/books',
                 type: 'GET',
@@ -58,9 +75,8 @@
             });
         }
 
-        // Получение всех книг по ajax-запросу
+        // Получение всех жанров по ajax-запросу
         function GetAllGenres() {
-
             $.ajax({
                 url: '/api/genres',
                 type: 'GET',
@@ -74,31 +90,56 @@
             });
         }
 
+        // Получение информации о книге
+        function GetDetailBookInfo(bookId) {
+            $.ajax({
+                url: '/api/books/' + bookId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    WriteDetailBooksResponse(data);
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+
         // вывод полученных книг на экран
-        function WriteBooksResponse(books) {      
+        function WriteBooksResponse(books) {
             var strResult;
             $.each(books, function (index, book) {
                 strResult += "<tr>";
-                strResult += "<td> " + book.BookName + "</td>"
-                    + "<td>" + book.AuthorName + "</td>"
-                    + "<td>" + book.Genre.GenreName + "</td>"
-                    + "<td>" + book.CreateDate + "</td>"
-                    + "<td>" + book.Publisher.PublisherName + "</td>"
+                strResult += "<td>" + book.BookName + "</td>"
+                    + "<td><button type='button' data-item='" + book.BookId + "' class='js-button-detail btn btn-info btn-l' data-toggle='modal' data-target='#myModal'>Подробнее</button></td>"
                     + "<td><a id='editItem' data-item='" + book.BookId + "' onclick='EditItem(this);' >Редактировать</a></td>"
                     + "<td><a id='delItem' data-item='" + book.BookId + "' onclick='DeleteItem(this);' >Удалить</a></td>"
-                + "</tr>";
-            });            
+                    + "</tr>";
+            });
             $("#books-list").find("tbody").html(strResult);
+        }
+
+        // вывод полученной книги
+        function WriteDetailBooksResponse(book) {
+            var strResult = "<div>";
+                strResult += "<p><b>Название: </b>" + book.BookName + "</p>"
+                    + "<p><b>Автор: </b>" + book.AuthorName + "</p>"
+                    + "<p><b>Жанр: </b>" + book.Genre.GenreName + "</p>"
+                    + "<p><b>Год издания: </b>" + book.CreateDate + "</p>"
+                    + "<p><b>Издательство: </b>" + book.Publisher.PublisherName + "</p>";                    
+            strResult += "</div>";
+            $(".modal-title").text(book.BookName);
+            $(".modal-body").empty().html(strResult);
         }
 
         // вывод полученных жанров на экран
         function WriteGenreResponse(genres) {
             var strResult = "<option>Выберите жанр</option>";;
-            $.each(genres, function (index, genre) {                
-                strResult += "<option value='" + genre.GenreId + "'>" + genre.GenreName + "</option>";                   
+            $.each(genres, function (index, genre) {
+                strResult += "<option value='" + genre.GenreId + "'>" + genre.GenreName + "</option>";
             });
             $("#genre-list").html(strResult);
         }
     </script>
-    
+
 }

@@ -6,12 +6,12 @@ using System.Web;
 
 namespace RESTful.Models
 {
-    public class BookDbInitializer : CreateDatabaseIfNotExists<BooksContext>
+    public class BookDbInitializer : DropCreateDatabaseAlways<BooksContext>
     {
         protected override void Seed(BooksContext context)
         {
-            Book book1 = new Book { BookName = "Красное и чёрное", AuthorName = "Стендаль", CreateDate = DateTime.Now.AddYears(-180) };
-            Book book2 = new Book { BookName = "Выстрел", AuthorName = "Александр Сергеевич Пушкин", CreateDate = DateTime.Now.AddYears(-100) };
+            Book book1 = new Book { BookName = "Красное и чёрное", AuthorName = "Стендаль", CreateDate = "1830" };
+            Book book2 = new Book { BookName = "Выстрел", AuthorName = "Александр Сергеевич Пушкин", CreateDate = "1905" };
             context.Books.AddRange(new List<Book>() { book1, book2 });
 
             Genre genre1 = new Genre { GenreName = "Повесть", Books = new List<Book> { book2 } };

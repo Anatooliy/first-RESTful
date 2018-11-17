@@ -14,7 +14,7 @@ namespace RESTful.Models
         [Required]
         public string BookName { get; set; }
         public string AuthorName { get; set; }
-        public DateTime CreateDate { get; set; }
+        public string CreateDate { get; set; }
         public int? PublisherId { get; set; }
         public int? GenreId { get; set; }
 
