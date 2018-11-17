@@ -6,7 +6,7 @@ using System.Web;
 
 namespace RESTful.Models
 {
-    public class BookDbInitializer : CreateDatabaseIfNotExists<BooksContext>
+    public class BookDbInitializer : DropCreateDatabaseAlways<BooksContext>
     {
         protected override void Seed(BooksContext context)
         {
@@ -22,6 +22,9 @@ namespace RESTful.Models
             Publisher publisher4 = new Publisher { PublisherName = "Terra Incognita" };
             context.Publishers.AddRange(new List<Publisher>() { publisher1, publisher2, publisher3, publisher4 });
 
+            Book book1 = new Book { BookName = "test", AuthorName = "authorName", CreateDate = DateTime.Now.AddYears(-100) };
+            Book book2 = new Book { BookName = "test", AuthorName = "authorName", CreateDate = DateTime.Now.AddYears(-100) };
+            context.Books.AddRange(new List<Book>() { book1, book2 });
             base.Seed(context);
         }
     }

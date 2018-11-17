@@ -1,33 +1,11 @@
-﻿@model IEnumerable<RESTful.Models.Genre>
-
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    ViewBag.Title = "Books store";
 }
 
-<h2>Index</h2>
+<h2>Books store</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.GenreName)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.GenreName)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.GenreId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.GenreId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.GenreId })
-        </td>
-    </tr>
-}
-
-</table>
+<div class="row">
+    <div id="books-list" class="col-md-12">
+        <p style="color:red">I will finish it today (17.11.2018)</p> 
+    </div>
+</div>

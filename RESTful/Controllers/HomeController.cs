@@ -11,10 +11,13 @@ namespace RESTful.Controllers
     {
         private BooksContext db = new BooksContext();
         public ActionResult Index()
+        {           
+            return View();
+        }
+
+        public ActionResult Index2()
         {
-            ViewBag.Title = "Home Page";
-            var genres = db.Genres.ToList(); 
-            return View(genres);
+            return View(db.Books.ToList());
         }
     }
 }
