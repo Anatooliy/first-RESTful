@@ -25,6 +25,9 @@
             <tbody></tbody>
         </table>
     </div>
+    <div class="col-md-12">
+        <button type="button" class="js-button-add btn btn-info btn-l" data-toggle="modal" data-target="#myModal">Добавить</button>
+    </div>
 </div>
 
 <!-- Modal -->
@@ -68,10 +71,19 @@
                 e.preventDefault();
                 var $this = $(this);
                 var id = $this.find(".hidden-book").val();
-                var inputs = $this.find("input, select");
-
-                
+                var inputs = $this.find("input, select");                
                 EditBook(id, inputs);
+            });
+
+            $(document).on("click", ".js-button-add", function () {                
+                GetAllForBook(0);
+            });
+
+            $(document).on("submit", ".add-info-new", function (e) {
+                e.preventDefault();
+                var $this = $(this);                
+                var inputs = $this.find("input, select");
+                AddBook(inputs);
             });
             
         });
@@ -123,6 +135,7 @@
 
         // вывод полученных книг на экран
         function WriteBooksResponse(books) {
+            console.log(books);
             var strResult;
             if (books.length > 0) {
                 $.each(books, function (index, book) {
@@ -174,13 +187,35 @@
             var book = {};
             inputs.each(function (index) {
                 book[$(this).attr('name')] = $(this).val();
-            });
-
-            console.log(book);
+            });            
             
             $.ajax({
                 url: '/api/books/' + id,
                 type: 'PUT',
+                data: JSON.stringify(book),
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    GetAllBooks();
+                    CleanModal();
+                },
+                error: function (x, y, z) {
+                    alert(x + '\n' + y + '\n' + z);
+                }
+            });
+        }
+
+        // Добавление книги
+        function AddBook(inputs) {
+            
+            var book = {};
+            inputs.each(function (index) {
+                book[$(this).attr('name')] = $(this).val();
+            });
+
+            console.log(book);
+            $.ajax({
+                url: '/api/books/',
+                type: 'POST',
                 data: JSON.stringify(book),
                 contentType: "application/json;charset=utf-8",
                 success: function (data) {
@@ -228,24 +263,58 @@
             $(".modal-body").html(strResultBook);
         } 
 
+        // вывод для добавления книги
+        function ShowAddBook(genreDatas, publisherDatas) {
+            var strResultGenres = "<div class='form-group'><select class='form-control' name='GenreId'>";
+            strResultGenres += "<option>Выберите жанр</option>";
+            $.each(genreDatas, function (index, genreData) {                
+                strResultGenres += "<option value='" + genreData.GenreId + "'>" + genreData.GenreName + "</option>";
+            });
+            strResultGenres += "</select></div>";
+
+            var strResultPublisher = "<div class='form-group'><select class='form-control' name='PublisherId'>";
+            strResultPublisher += "<option>Выберите издательство</option>";
+            $.each(publisherDatas, function (index, publisherData) {                
+                strResultPublisher += "<option value='" + publisherData.PublisherId + "'>" + publisherData.PublisherName + "</option>";
+            });
+            strResultPublisher += "</select></div>";
+
+            var strResultBook = "<form class='add-info-new'>";
+            strResultBook += "<div class='form-group'><label>Название:</label><input class='form-control' name='BookName' value='' /></div>"
+                + "<div class='form-group'><label>Автор:</label><input class='form-control' name='AuthorName' value='' /></div>"
+                + "<div class='form-group'><label>Год издания:</label><input class='form-control' name='CreateDate' value='' /></div>"
+                + "<label>Жанр:</label>" + strResultGenres
+                + "<label>Издательство:</label>" + strResultPublisher;
+            strResultBook += "<button type='submit' class='js-submit-add-new btn btn-default'>Добавить</button>";
+            strResultBook += "</form>";
+
+            $(".modal-title").text("Добавление книги");
+            $(".modal-body").html(strResultBook);
+        } 
+
         // запрос книги на редактирование
         function GetAllForBook(id) { 
             var bookData,
                 genreData,
-                publisherData;
-
-            bookData = $.ajax({
-                url: '/api/books/' + id,
-                type: 'GET',
-                async: false,
-                dataType: 'json',
-                done: function (data) {                    
-                    return data;
-                },
-                error: function () {
-                    return false;
-                }
-            }).responseJSON;
+                publisherData,
+                check = true;
+            if (id != 0) {
+                bookData = $.ajax({
+                    url: '/api/books/' + id,
+                    type: 'GET',
+                    async: false,
+                    dataType: 'json',
+                    done: function (data) {
+                        return data;
+                    },
+                    error: function () {
+                        return false;
+                    }
+                }).responseJSON;
+            }
+            else {
+                check = false;                
+            }
 
             genreData = $.ajax({
                 url: '/api/genres',
@@ -272,8 +341,10 @@
                     return false;
                 }
             }).responseJSON;
-
-            ShowEditBook(bookData, genreData, publisherData);
+            if (check)
+                ShowEditBook(bookData, genreData, publisherData);
+            else
+                ShowAddBook(genreData, publisherData);
         }
 
         // вывод полученных жанров на экран
