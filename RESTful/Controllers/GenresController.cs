@@ -24,16 +24,16 @@ namespace RESTful.Controllers
         }
 
         // GET: api/Genres/5
-        [ResponseType(typeof(Genre))]
-        public async Task<IHttpActionResult> GetGenre(int id)
+        [ResponseType(typeof(Book))]
+        public IQueryable<Book> GetGenre(int id)
         {
-            Genre genre = await db.Genres.FindAsync(id);
+            Genre genre = db.Genres.Find(id);
             if (genre == null)
             {
-                return NotFound();
+                return db.Books;
             }
 
-            return Ok(genre);
+            return db.Books.Where(b => b.GenreId == id);
         }
 
         // PUT: api/Genres/5
