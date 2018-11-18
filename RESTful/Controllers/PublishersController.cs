@@ -13,44 +13,44 @@ using RESTful.Models;
 
 namespace RESTful.Controllers
 {
-    public class BooksController : ApiController
+    public class PublishersController : ApiController
     {
         private BooksContext db = new BooksContext();
 
-        // GET: api/Books
-        public IQueryable<Book> GetBooks()
+        // GET: api/Publishers
+        public IQueryable<Publisher> GetPublishers()
         {
-            return db.Books;
+            return db.Publishers;
         }
 
-        // GET: api/Books/5
-        [ResponseType(typeof(Book))]
-        public async Task<IHttpActionResult> GetBook(int id)
+        // GET: api/Publishers/5
+        [ResponseType(typeof(Publisher))]
+        public async Task<IHttpActionResult> GetPublisher(int id)
         {
-            Book book = await db.Books.FindAsync(id);
-            if (book == null)
+            Publisher publisher = await db.Publishers.FindAsync(id);
+            if (publisher == null)
             {
                 return NotFound();
             }
 
-            return Ok(book);
+            return Ok(publisher);
         }
 
-        // PUT: api/Books/5
+        // PUT: api/Publishers/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutBook(int id, Book book)
+        public async Task<IHttpActionResult> PutPublisher(int id, Publisher publisher)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != book.BookId)
+            if (id != publisher.PublisherId)
             {
                 return BadRequest();
             }
 
-            db.Entry(book).State = EntityState.Modified;
+            db.Entry(publisher).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +58,7 @@ namespace RESTful.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookExists(id))
+                if (!PublisherExists(id))
                 {
                     return NotFound();
                 }
@@ -71,35 +71,35 @@ namespace RESTful.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Books
-        [ResponseType(typeof(Book))]
-        public async Task<IHttpActionResult> PostBook(Book book)
+        // POST: api/Publishers
+        [ResponseType(typeof(Publisher))]
+        public async Task<IHttpActionResult> PostPublisher(Publisher publisher)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Books.Add(book);
+            db.Publishers.Add(publisher);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = book.BookId }, book);
+            return CreatedAtRoute("DefaultApi", new { id = publisher.PublisherId }, publisher);
         }
 
-        // DELETE: api/Books/5
-        [ResponseType(typeof(Book))]
-        public async Task<IHttpActionResult> DeleteBook(int id)
+        // DELETE: api/Publishers/5
+        [ResponseType(typeof(Publisher))]
+        public async Task<IHttpActionResult> DeletePublisher(int id)
         {
-            Book book = await db.Books.FindAsync(id);
-            if (book == null)
+            Publisher publisher = await db.Publishers.FindAsync(id);
+            if (publisher == null)
             {
                 return NotFound();
             }
 
-            db.Books.Remove(book);
+            db.Publishers.Remove(publisher);
             await db.SaveChangesAsync();
 
-            return Ok(book);
+            return Ok(publisher);
         }
 
         protected override void Dispose(bool disposing)
@@ -110,10 +110,10 @@ namespace RESTful.Controllers
             }
             base.Dispose(disposing);
         }
-         
-        private bool BookExists(int id)
+
+        private bool PublisherExists(int id)
         {
-            return db.Books.Count(e => e.BookId == id) > 0;
+            return db.Publishers.Count(e => e.PublisherId == id) > 0;
         }
     }
 }

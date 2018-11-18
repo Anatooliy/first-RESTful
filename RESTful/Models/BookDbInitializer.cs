@@ -7,7 +7,7 @@ using System.Web;
 namespace RESTful.Models
 {
     public class BookDbInitializer : DropCreateDatabaseAlways<BooksContext>
-    {
+    {  
         protected override void Seed(BooksContext context)
         { 
             Book book1 = new Book { BookName = "Красное и чёрное", AuthorName = "Стендаль", CreateDate = "1830" };
