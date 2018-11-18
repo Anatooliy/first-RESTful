@@ -7,7 +7,7 @@ namespace RESTful.Models
     public class BooksContext : DbContext
     {        
         public BooksContext()
-            : base()
+            : base("name=BooksContext")
         {
         }        
 

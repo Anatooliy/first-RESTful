@@ -20,6 +20,10 @@ namespace RESTful.Controllers
         // GET: api/Books
         public IQueryable<Book> GetBooks()
         {
+            var book = db.Books.AsQueryable();
+            //по каким-то причинам если модели virtual добавление ломалось
+            book.Include(p => p.Genre);
+            book.Include(t => t.Publisher);
             return db.Books;
         }
 
@@ -32,7 +36,8 @@ namespace RESTful.Controllers
             {
                 return NotFound();
             }
-
+            book.Genre = await db.Genres.FirstOrDefaultAsync(g => g.GenreId == book.GenreId);
+            book.Publisher = await db.Publishers.FirstOrDefaultAsync(p => p.PublisherId == book.PublisherId);
             return Ok(book);
         }
 
@@ -75,8 +80,8 @@ namespace RESTful.Controllers
         [ResponseType(typeof(Book))]
         public async Task<IHttpActionResult> PostBook(Book book)
         {
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) 
+            { 
                 return BadRequest(ModelState);
             }
 

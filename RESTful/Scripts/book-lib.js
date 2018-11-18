@@ -51,7 +51,7 @@ function GetAllBooks() {
         url: '/api/books',
         type: 'GET',
         dataType: 'json',
-        success: function (data) {
+        success: function (data) {            
             WriteBooksResponse(data);
         },
         error: function (x, y, z) {
@@ -106,7 +106,7 @@ function GetDetailBookInfo(bookId) {
 }
 
 // вывод полученных книг на экран
-function WriteBooksResponse(books) {    
+function WriteBooksResponse(books) {       
     var strResult;
     if (books.length > 0) {
         $.each(books, function (index, book) {
@@ -185,7 +185,7 @@ function AddBook(inputs) {
         type: 'POST',
         data: JSON.stringify(book),
         contentType: "application/json;charset=utf-8",
-        success: function (data) {
+        success: function (data) {            
             GetAllBooks();
             CleanModal();
         },
@@ -198,13 +198,12 @@ function AddBook(inputs) {
 // вывод полученной книги для редактирования
         function ShowEditBook(bookData, genreDatas, publisherDatas) {
             var strResultGenres = "<div class='form-group'><select class='form-control' name='GenreId'>";
-            $.each(genreDatas, function (index, genreData) {
-            console.log(bookData.GenreId + " " + genreData.GenreId);
-        if (bookData.GenreId == genreData.GenreId)
+            $.each(genreDatas, function (index, genreData) {            
+                if (bookData.GenreId == genreData.GenreId)
                     strResultGenres += "<option selected value='" + genreData.GenreId + "'>" + genreData.GenreName + "</option>";
-    else
+                 else
                     strResultGenres += "<option value='" + genreData.GenreId + "'>" + genreData.GenreName + "</option>";
-});
+            });
             strResultGenres += "</select></div>";
 
             var strResultPublisher = "<div class='form-group'><select class='form-control' name='PublisherId'>";

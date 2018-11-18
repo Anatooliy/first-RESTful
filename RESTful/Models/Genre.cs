@@ -11,8 +11,7 @@ namespace RESTful.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity), Key]
         public int GenreId { get; set; }
-        public string GenreName { get; set; }
-        [System.Runtime.Serialization.IgnoreDataMember]
+        public string GenreName { get; set; }        
         public virtual ICollection<Book> Books { get; set; }
 
         public Genre()
